@@ -19,7 +19,7 @@
                     <li><a href="#staff">Staff</a></li>
                     <li><a href="#about">About</a></li>
                     <li><a href="#contact">Contact</a></li>
-                    <li><a href="#admin-login" class="admin-btn">Admin Login</a></li>
+                    <li><a href="adminlogin.php" class="admin-btn">Admin Login</a></li>
                 </ul>
             </div>
         </nav>
