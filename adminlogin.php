@@ -19,60 +19,105 @@ try {
 // Initialize variables
 $error = "";
 $username = "";
+$userType = ""; // To store which type of user is logging in
+
+// Create necessary tables if they don't exist
+try {
+    // Admin users table
+    $conn->exec("CREATE TABLE IF NOT EXISTS admin_users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    // Staff users table
+    $conn->exec("CREATE TABLE IF NOT EXISTS staff_users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        department VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+    
+    // Student users table
+    $conn->exec("CREATE TABLE IF NOT EXISTS student_users (
+        id INT AUTO_INCREMENT PRIMARY KEY,
+        username VARCHAR(50) NOT NULL UNIQUE,
+        password VARCHAR(255) NOT NULL,
+        name VARCHAR(100) NOT NULL,
+        student_id VARCHAR(20),
+        major VARCHAR(100),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )");
+} catch(PDOException $e) {
+    die("Database setup error: " . $e->getMessage());
+}
 
 // Check if form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form data
     $username = trim($_POST["username"]);
     $password = trim($_POST["password"]);
+    $userType = isset($_POST["user_type"]) ? $_POST["user_type"] : "student"; // Default to student if not set
     
     // Validate input
     if (empty($username) || empty($password)) {
         $error = "Please enter both username and password";
     } else {
-        // For this example, we'll create a simple users table if it doesn't exist
+        // Authenticate based on user type
         try {
-            $conn->exec("CREATE TABLE IF NOT EXISTS admin_users (
-                id INT AUTO_INCREMENT PRIMARY KEY,
-                username VARCHAR(50) NOT NULL UNIQUE,
-                password VARCHAR(255) NOT NULL,
-                name VARCHAR(100) NOT NULL,
-                created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-            )");
+            $table = "";
+            $redirectPage = "";
             
-            // Check if default admin exists, if not create one
-            $stmt = $conn->prepare("SELECT COUNT(*) FROM admin_users WHERE username = 'admin'");
-            $stmt->execute();
-            if ($stmt->fetchColumn() == 0) {
-                // Create default admin user (username: admin, password: admin123)
-                $default_password = password_hash("admin123", PASSWORD_DEFAULT);
-                $stmt = $conn->prepare("INSERT INTO admin_users (username, password, name) VALUES ('admin', :password, 'Administrator')");
-                $stmt->bindParam(':password', $default_password);
-                $stmt->execute();
+            switch ($userType) {
+                case "admin":
+                    $table = "admin_users";
+                    $redirectPage = "admin_dashboard.php";
+                    $sessionPrefix = "admin";
+                    break;
+                case "staff":
+                    $table = "staff_users";
+                    $redirectPage = "staff_dashboard.php";
+                    $sessionPrefix = "staff";
+                    break;
+                case "student":
+                    $table = "student_users";
+                    $redirectPage = "student_dashboard.php";
+                    $sessionPrefix = "student";
+                    break;
+                default:
+                    $error = "Invalid user type";
+                    break;
             }
             
-            // Check user credentials
-            $stmt = $conn->prepare("SELECT id, username, password, name FROM admin_users WHERE username = :username");
-            $stmt->bindParam(':username', $username);
-            $stmt->execute();
-            
-            if ($stmt->rowCount() > 0) {
-                $user = $stmt->fetch(PDO::FETCH_ASSOC);
-                if (password_verify($password, $user["password"])) {
-                    // Authentication successful - create session
-                    $_SESSION["admin_logged_in"] = true;
-                    $_SESSION["admin_id"] = $user["id"];
-                    $_SESSION["admin_username"] = $user["username"];
-                    $_SESSION["admin_name"] = $user["name"];
-                    
-                    // Redirect to admin dashboard
-                    header("Location: admin_dashboard.php");
-                    exit();
+            if (!empty($table)) {
+                // Check user credentials
+                $stmt = $conn->prepare("SELECT id, username, password, name FROM $table WHERE username = :username");
+                $stmt->bindParam(':username', $username);
+                $stmt->execute();
+
+                if ($stmt->rowCount() > 0) {
+                    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+                    if (password_verify($password, $user["password"])) {
+                        // Authentication successful - create session
+                        $_SESSION[$sessionPrefix . "_logged_in"] = true;
+                        $_SESSION[$sessionPrefix . "_id"] = $user["id"];
+                        $_SESSION[$sessionPrefix . "_username"] = $user["username"];
+                        $_SESSION[$sessionPrefix . "_name"] = $user["name"];
+                        $_SESSION["user_type"] = $userType; // Store user type in session
+                        
+                        // Redirect to appropriate dashboard
+                        header("Location: $redirectPage");
+                        exit();
+                    } else {
+                        $error = "Invalid username or password";
+                    }
                 } else {
                     $error = "Invalid username or password";
                 }
-            } else {
-                $error = "Invalid username or password";
             }
         } catch(PDOException $e) {
             $error = "Database error: " . $e->getMessage();
@@ -85,7 +130,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin Login - University Course Hub</title>
+    <title>Login - University Course Hub</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         .login-container {
@@ -119,6 +164,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             border: 1px solid #ddd;
             border-radius: 4px;
             font-size: 16px;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .user-type-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .user-type-option input {
+            margin-right: 5px;
         }
         
         .error-message {
@@ -161,13 +221,28 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </head>
 <body>
     <div class="login-container">
-        <h1>Admin Login</h1>
+        <h1>Login</h1>
         
         <?php if (!empty($error)): ?>
             <div class="error-message"><?php echo $error; ?></div>
         <?php endif; ?>
         
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
+            <div class="user-type-selector">
+                <div class="user-type-option">
+                    <input type="radio" id="student" name="user_type" value="student" <?php echo ($userType == "student" || empty($userType)) ? "checked" : ""; ?>>
+                    <label for="student">Student</label>
+                </div>
+                <div class="user-type-option">
+                    <input type="radio" id="staff" name="user_type" value="staff" <?php echo ($userType == "staff") ? "checked" : ""; ?>>
+                    <label for="staff">Staff</label>
+                </div>
+                <div class="user-type-option">
+                    <input type="radio" id="admin" name="user_type" value="admin" <?php echo ($userType == "admin") ? "checked" : ""; ?>>
+                    <label for="admin">Admin</label>
+                </div>
+            </div>
+            
             <div class="form-group">
                 <label for="username">Username</label>
                 <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($username); ?>" required>

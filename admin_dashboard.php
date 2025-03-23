@@ -44,6 +44,21 @@ try {
 } catch(PDOException $e) {
     echo "Error fetching dashboard data: " . $e->getMessage();
 }
+
+// Handle tab selection with PHP
+$active_section = 'programmes-management'; // Default active section
+$valid_sections = [
+    'programmes-management',
+    'modules-management',
+    'staff-management',
+    'student-management',
+    'password-management'
+];
+
+// Check if a section is specified in the URL
+if (isset($_GET['section']) && in_array($_GET['section'], $valid_sections)) {
+    $active_section = $_GET['section'];
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -265,16 +280,17 @@ try {
         
         <nav class="admin-nav">
             <ul>
-                <li><a href="#" class="admin-nav-link active" data-section="programmes-management">Programmes</a></li>
-                <li><a href="#" class="admin-nav-link" data-section="modules-management">Modules</a></li>
-                <li><a href="#" class="admin-nav-link" data-section="staff-management">Staff</a></li>
-                <li><a href="#" class="admin-nav-link" data-section="student-management">Interested Students</a></li>
+                <li><a href="?section=programmes-management" class="admin-nav-link <?php echo ($active_section == 'programmes-management') ? 'active' : ''; ?>">Programmes</a></li>
+                <li><a href="?section=modules-management" class="admin-nav-link <?php echo ($active_section == 'modules-management') ? 'active' : ''; ?>">Modules</a></li>
+                <li><a href="?section=staff-management" class="admin-nav-link <?php echo ($active_section == 'staff-management') ? 'active' : ''; ?>">Staff</a></li>
+                <li><a href="?section=student-management" class="admin-nav-link <?php echo ($active_section == 'student-management') ? 'active' : ''; ?>">Interested Students</a></li>
+                <li><a href="?section=password-management" class="admin-nav-link <?php echo ($active_section == 'password-management') ? 'active' : ''; ?>">Password Manager</a></li>
             </ul>
         </nav>
         
         <div class="admin-content">
             <!-- Programmes Management Section -->
-            <section id="programmes-management" class="admin-section-content active">
+            <section id="programmes-management" class="admin-section-content <?php echo ($active_section == 'programmes-management') ? 'active' : ''; ?>">
                 <h2>Programmes Management</h2>
                 <div class="admin-actions">
                     <button id="add-programme" class="primary-btn" onclick="location.href='programme_form.php';">Add New Programme</button>
@@ -325,7 +341,7 @@ try {
             </section>
 
             <!-- Modules Management Section -->
-            <section id="modules-management" class="admin-section-content">
+            <section id="modules-management" class="admin-section-content <?php echo ($active_section == 'modules-management') ? 'active' : ''; ?>">
                 <h2>Modules Management</h2>
                 <div class="admin-actions">
                     <button id="add-module" class="primary-btn" onclick="location.href='module_form.php';">Add New Module</button>
@@ -390,7 +406,7 @@ try {
             </section>
 
             <!-- Staff Management Section -->
-            <section id="staff-management" class="admin-section-content">
+            <section id="staff-management" class="admin-section-content <?php echo ($active_section == 'staff-management') ? 'active' : ''; ?>">
                 <h2>Staff Management</h2>
                 <div class="admin-actions">
                     <button id="add-staff" class="primary-btn" onclick="location.href='staff_form.php';">Add New Staff</button>
@@ -463,7 +479,7 @@ try {
             </section>
 
             <!-- Student Management Section -->
-            <section id="student-management" class="admin-section-content">
+            <section id="student-management" class="admin-section-content <?php echo ($active_section == 'student-management') ? 'active' : ''; ?>">
                 <h2>Interested Students</h2>
                 <div class="admin-actions">
                     <button id="export-students" class="primary-btn" onclick="location.href='export_students.php';">Export Mailing List</button>
@@ -511,29 +527,152 @@ try {
                     </table>
                 </div>
             </section>
+            
+           <!-- Password Management Section -->
+<section id="password-management" class="admin-section-content <?php echo ($active_section == 'password-management') ? 'active' : ''; ?>">
+    <h2>Password Management</h2>
+    
+    <!-- Admin Users Section -->
+    <div class="password-section">
+        <h3>Admin Users</h3>
+        <div class="admin-actions">
+            <a href="add_user.php?type=admin" class="primary-btn">Add New Admin</a>
+        </div>
+        <div class="admin-table-container">
+            <table class="admin-table" id="admin-users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Name</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    try {
+                        // First, check which columns exist in the admin_users table
+                        $stmt = $conn->query("DESCRIBE admin_users");
+                        $admin_columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                        
+                        // Build query based on available columns
+                        $select_columns = "ID, Username";
+                        if (in_array('Name', $admin_columns)) {
+                            $select_columns .= ", Name";
+                        }
+                        
+                        $stmt = $conn->query("SELECT $select_columns FROM admin_users ORDER BY ID");
+                        
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row['ID']) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['Username']) . "</td>";
+                            
+                            // Only show Name if it exists
+                            if (isset($row['Name'])) {
+                                echo "<td>" . htmlspecialchars($row['Name']) . "</td>";
+                            } else {
+                                echo "<td>N/A</td>";
+                            }
+                            
+                            echo "<td>";
+                            echo "<a href='change_password.php?type=admin&id=" . $row['ID'] . "' class='edit-btn'>Change Password</a>";
+                            // Add delete button - prevent deletion of current user
+                            if ($_SESSION["admin_id"] != $row['ID']) {
+                                echo "<a href='delete_user.php?type=admin&id=" . $row['ID'] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this admin user?\")'>Delete</a>";
+                            }
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                    } catch(PDOException $e) {
+                        echo "<tr><td colspan='4'>Error fetching admin users: " . $e->getMessage() . "</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
         </div>
     </div>
-
-    <script>
-        // Tab switching functionality
-        document.querySelectorAll('.admin-nav-link').forEach(link => {
-            link.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                // Remove active class from all links and sections
-                document.querySelectorAll('.admin-nav-link').forEach(item => {
-                    item.classList.remove('active');
-                });
-                document.querySelectorAll('.admin-section-content').forEach(section => {
-                    section.classList.remove('active');
-                });
-                
-                // Add active class to clicked link and corresponding section
-                this.classList.add('active');
-                const sectionId = this.getAttribute('data-section');
-                document.getElementById(sectionId).classList.add('active');
-            });
-        });
-    </script>
+    
+    <!-- Staff Users Section -->
+    <div class="password-section" style="margin-top: 30px;">
+        <h3>Staff Users</h3>
+        <div class="admin-actions">
+            <a href="add_user.php?type=staff" class="primary-btn">Add New Staff User</a>
+        </div>
+        <div class="admin-table-container">
+            <table class="admin-table" id="staff-users-table">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>Username</th>
+                        <th>Staff Member</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php
+                    try {
+                        // First, check which columns exist in the staff_users table
+                        $stmt = $conn->query("DESCRIBE staff_users");
+                        $staff_columns = $stmt->fetchAll(PDO::FETCH_COLUMN);
+                        
+                        // Determine staff ID column name
+                        $staff_id_column = null;
+                        $possible_staff_id_columns = ['StaffID', 'staff_id', 'staffid', 'staff_member_id'];
+                        
+                        foreach ($possible_staff_id_columns as $column) {
+                            if (in_array($column, $staff_columns)) {
+                                $staff_id_column = $column;
+                                break;
+                            }
+                        }
+                        
+                        // If we found a staff ID column, join with Staff table
+                        if ($staff_id_column) {
+                            $stmt = $conn->prepare("SELECT su.*, s.Name 
+                                                   FROM staff_users su
+                                                   LEFT JOIN Staff s ON su.$staff_id_column = s.StaffID
+                                                   ORDER BY su.Username");
+                        } else {
+                            // Otherwise just show staff users without joining
+                            $stmt = $conn->prepare("SELECT * FROM staff_users ORDER BY username");
+                        }
+                        
+                        $stmt->execute();
+                        
+                        while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
+                            $user_id_column = array_keys($row)[0]; // Assume first column is ID
+                            
+                            echo "<tr>";
+                            echo "<td>" . htmlspecialchars($row[$user_id_column]) . "</td>";
+                            echo "<td>" . htmlspecialchars($row['username']) . "</td>";
+                            
+                            // Show staff name if available from join
+                            if (isset($row['Name'])) {
+                                echo "<td>" . htmlspecialchars($row['Name']) . "</td>";
+                            } else {
+                                echo "<td>Unknown</td>";
+                            }
+                            
+                            echo "<td>";
+                            echo "<a href='change_password.php?type=staff&id=" . $row[$user_id_column] . "' class='edit-btn'>Change Password</a>";
+                            // Add delete button for staff users
+                            echo "<a href='delete_user.php?type=staff&id=" . $row[$user_id_column] . "' class='delete-btn' onclick='return confirm(\"Are you sure you want to delete this staff user?\")'>Delete</a>";
+                            echo "</td>";
+                            echo "</tr>";
+                        }
+                    } catch(PDOException $e) {
+                        echo "<tr><td colspan='4'>Error fetching staff users: " . $e->getMessage() . "</td></tr>";
+                    }
+                    ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+                <!-- Password management content here -->
+            </section>
+        </div>
+    </div>
 </body>
 </html>

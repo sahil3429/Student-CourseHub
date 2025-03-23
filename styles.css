@@ -95,18 +95,42 @@
   
   /* Hero Section */
   .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1400/500');
+    position: relative;
+    /*background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('/api/placeholder/1400/500');
     background-size: cover;
-    background-position: center;
+    background-position: center;*/
+    overflow: hidden;
     color: white;
     text-align: center;
-    padding: 5rem 1rem;
+    
   }
+
+  .hero-images {
+    display: flex;
+    overflow: hidden;
+    height: 100%;
+    transition: transform 0.5s ease-in-out;
+
+  }
+
+  .hero-images img {
+    width: 100%; /* Make images fill the viewport width */
+    height: 100%;
+    object-fit: cover; /* Maintain image aspect ratio and cover the entire container */
+}
   
-  .hero-content {
-    max-width: 800px;
-    margin: 0 auto;
-  }
+.hero-content {
+  position: absolute; /* Position content over the images */
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%); /* Center the content */
+  color: white;
+  text-align: center;
+  z-index: 1; /* Ensure content is above the images */
+  background-color: rgba(0, 0, 0, 0.5); /* Add a semi-transparent background for better readability */
+  padding: 20px;
+  border-radius: 10px;
+}
   
   .hero h1 {
     font-size: 3rem;
@@ -218,15 +242,17 @@
     gap: 2rem;
   }
   
-  .programme-card, .staff-card {
+  .programme-item, .staff-card {
     background-color: white;
+    margin: 12px;
+    padding: 10px;
     border-radius: 8px;
     overflow: hidden;
     box-shadow: 0 3px 6px rgba(0, 0, 0, 0.1);
     transition: transform 0.3s ease, box-shadow 0.3s ease;
   }
   
-  .programme-card:hover, .staff-card:hover {
+  .programme-item:hover, .staff-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
   }
@@ -362,7 +388,8 @@
     color: #333;
   }
   
-  /* Programme Details Modal */
+  /* Programme Details Modal*/
+  
   .programme-header {
     margin-bottom: 1.5rem;
   }
@@ -800,3 +827,4 @@
       font-size: 0.9rem;
     }
   }
+  
