@@ -146,18 +146,26 @@ function getTopStaff($conn) {
 
 // Function to register interest
 function registerInterest($conn, $programmeId, $name, $email, $comments) {
-    $sql = "INSERT INTO InterestedStudents (ProgrammeID, StudentName, Email, Comments) 
-            VALUES (?, ?, ?, ?)";
+    // Change this line to match your table structure
+    $sql = "INSERT INTO InterestedStudents (ProgrammeID, StudentName, Email) 
+            VALUES (?, ?, ?)";
     
     $stmt = $conn->prepare($sql);
-    $stmt->bind_param("isss", $programmeId, $name, $email, $comments);
+    if ($stmt === false) {
+        error_log("Prepare failed: " . $conn->error);
+        return false;
+    }
+    
+    // Modified to use only three parameters
+    $stmt->bind_param("iss", $programmeId, $name, $email);
     
     if ($stmt->execute()) {
         return true;
     }
+    
+    error_log("Execute failed: " . $stmt->error);
     return false;
 }
-
 // Handle admin login
 function verifyAdmin($username, $password) {
     // In a real application, this would check against a secure database
@@ -623,11 +631,6 @@ $staff = getTopStaff($conn);
                             <div class="form-group">
                                 <label for="student-email">Email Address:</label>
                                 <input type="email" id="student-email" name="student_email" required>
-                            </div>
-                            
-                            <div class="form-group">
-                                <label for="student-comments">Comments (Optional):</label>
-                                <textarea id="student-comments" name="student_comments"></textarea>
                             </div>
                             
                             <div class="form-actions">
