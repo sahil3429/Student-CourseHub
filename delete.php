@@ -81,40 +81,20 @@ try {
                 $_SESSION['error_message'] = "Failed to delete module.";
             }
             break;
-            
-        case 'staff':
-            // Check if staff is a programme leader
-            $checkStmt = $conn->prepare("SELECT COUNT(*) FROM Programmes WHERE ProgrammeLeaderID = :id");
-            $checkStmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $checkStmt->execute();
-            
-            if ($checkStmt->fetchColumn() > 0) {
-                $_SESSION['error_message'] = "Cannot delete: This staff member is currently assigned as a programme leader.";
-                header("Location: index.php");
-                exit();
-            }
-            
-            // Check if staff is a module leader
-            $checkStmt = $conn->prepare("SELECT COUNT(*) FROM Modules WHERE ModuleLeaderID = :id");
-            $checkStmt->bindParam(':id', $id, PDO::PARAM_INT);
-            $checkStmt->execute();
-            
-            if ($checkStmt->fetchColumn() > 0) {
-                $_SESSION['error_message'] = "Cannot delete: This staff member is currently assigned as a module leader.";
-                header("Location: index.php");
-                exit();
-            }
-            
-            // Delete the staff member
-            $stmt = $conn->prepare("DELETE FROM Staff WHERE StaffID = :id");
-            $stmt->bindParam(':id', $id, PDO::PARAM_INT);
-            
-            if ($stmt->execute()) {
-                $_SESSION['success_message'] = "Staff member successfully deleted.";
-            } else {
-                $_SESSION['error_message'] = "Failed to delete staff member.";
-            }
-            break;
+            case 'staff':
+                // Delete the staff member directly without checking assignments
+                $stmt = $conn->prepare("DELETE FROM Staff WHERE StaffID = :id");
+                $stmt->bindParam(':id', $id, PDO::PARAM_INT);
+
+                
+                
+                if ($stmt->execute()) {
+                    $_SESSION['success_message'] = "Staff member successfully deleted.";
+                } else {
+                    $_SESSION['error_message'] = "Failed to delete staff member.";
+                }
+                break;
+    break;
             
         case 'student':
             // Delete the interested student

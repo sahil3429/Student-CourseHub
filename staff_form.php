@@ -68,7 +68,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         $errorMessage = "Staff name is required.";
     } elseif (!$isEditing && empty($staffID)) {
         $errorMessage = "Staff ID is required.";
-    } else {
+    }
+    elseif ($staffID <=0) {
+        $errorMessage = "Invalid Staff ID.";
+    }
+    else {
         try {
             if ($isEditing) {
                 // Update existing staff
