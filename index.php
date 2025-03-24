@@ -11,15 +11,16 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to get all programmes
+// Function To Get All Programmes
 function getAllProgrammes($conn) {
-    $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, p.Image, 
+    $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, 
             l.LevelName, s.Name as LeaderName 
             FROM Programmes p
             JOIN Levels l ON p.LevelID = l.LevelID
             JOIN Staff s ON p.ProgrammeLeaderID = s.StaffID";
     $result = $conn->query($sql);
     
+    //Fetching rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -37,12 +38,19 @@ function getProgrammesByLevel($conn, $levelId) {
             JOIN Levels l ON p.LevelID = l.LevelID
             JOIN Staff s ON p.ProgrammeLeaderID = s.StaffID
             WHERE p.LevelID = ?";
-    
+    //Database Prepared Statement
     $stmt = $conn->prepare($sql);
+    
+    //Binding Integar Parameter
     $stmt->bind_param("i", $levelId);
+
+    //Execution of the statement
     $stmt->execute();
+    
+    //Retrieving the result
     $result = $stmt->get_result();
     
+    //Fetching Rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -52,7 +60,7 @@ function getProgrammesByLevel($conn, $levelId) {
     return $programmes;
 }
 
-// Function to search programmes
+// Function to get programmes by Search
 function searchProgrammes($conn, $search) {
     $searchTerm = "%$search%";
     $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, p.Image, 
@@ -63,11 +71,13 @@ function searchProgrammes($conn, $search) {
             WHERE p.ProgrammeName LIKE ? 
             OR p.Description LIKE ?";
     
+    //Database Prepared Statement
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $searchTerm, $searchTerm);
     $stmt->execute();
     $result = $stmt->get_result();
     
+    //Fetching Rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -156,7 +166,7 @@ function registerInterest($conn, $programmeId, $name, $email, $comments) {
         return false;
     }
     
-    // Modified to use only three parameters
+    // Modified to use only three parameters, iss=integers, strings, strings
     $stmt->bind_param("iss", $programmeId, $name, $email);
     
     if ($stmt->execute()) {
@@ -166,15 +176,7 @@ function registerInterest($conn, $programmeId, $name, $email, $comments) {
     error_log("Execute failed: " . $stmt->error);
     return false;
 }
-// Handle admin login
-function verifyAdmin($username, $password) {
-    // In a real application, this would check against a secure database
-    // This is a simple example - use proper authentication in production
-    if ($username === "admin" && $password === "password") {
-        return true;
-    }
-    return false;
-}
+
 
 // Initialize variables
 $programmes = [];
