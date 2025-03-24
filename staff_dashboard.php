@@ -137,7 +137,6 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
             <li><a href="programmes.php">Programmes</a></li>
             <li><a href="staff_dashboard.php" class="active">Staff</a></li>
             <li><a href="modules.php">Modules</a></li>
-            <li><a href="events.php">Events</a></li>
             <li><a href="contact.php">Contact</a></li>
             <li style="margin-left: auto;"><a href="logout.php" class="logout-btn">Logout</a></li>
         </ul>
@@ -146,7 +145,7 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
     <main id="main-content">
         <div class="page-header">
             <h2>Academic Staff</h2>
-            <form action="staff.php" method="GET" class="search-container">
+            <form action="" method="GET" class="search-container">
                 <input type="text" name="search" placeholder="Search staff..." aria-label="Search for staff" value="<?php echo htmlspecialchars($searchTerm); ?>">
                 <button type="submit">Search</button>
             </form>

@@ -382,7 +382,7 @@ $staff = getTopStaff($conn);
                     <li><a href="index.php#programmes">Programmes</a></li>
                     <li><a href="index.php#staff">Staff</a></li>
                     <li><a href="index.php#contact">Contact</a></li>
-                    <li><a href="adminlogin.php" class="admin-btn">Login</a></li>
+                    <li><a href="stafflogin.php" class="admin-btn">Login</a></li>
                 </ul>
             </div>
         </nav>
