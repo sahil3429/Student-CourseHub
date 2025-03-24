@@ -155,6 +155,7 @@
     cursor: pointer;
     transition: all 0.3s ease;
     border: none;
+    margin-top: 3%;
   }
   
   .primary-btn {
@@ -827,4 +828,6 @@
       font-size: 0.9rem;
     }
   }
+
+  
   

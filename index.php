@@ -249,37 +249,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_interest'])) 
     $studentName = $_POST['student_name'];
     $studentEmail = $_POST['student_email'];
     $programmeId = $_POST['programme_id'];
-    $comments = isset($_POST['student_comments']) ? $_POST['student_comments'] : "";
     
-    if (registerInterest($conn, $programmeId, $studentName, $studentEmail, $comments)) {
+    if (registerInterest($conn, $programmeId, $studentName, $studentEmail)) {
         $registrationSuccess = true;
     } else {
         $registrationError = "Failed to register interest. Please try again.";
     }
 }
 
-// Handle admin login
-$adminLoggedIn = false;
-$loginError = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_login'])) {
-    $username = $_POST['admin_username'];
-    $password = $_POST['admin_password'];
-    
-    if (verifyAdmin($username, $password)) {
-        session_start();
-        $_SESSION['admin_logged_in'] = true;
-        $adminLoggedIn = true;
-    } else {
-        $loginError = "Invalid username or password";
-    }
-}
-
-// Check if admin is already logged in
-session_start();
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    $adminLoggedIn = true;
-}
 
 // Get top 3 staff for staff section
 $staff = getTopStaff($conn);
@@ -291,7 +269,7 @@ $staff = getTopStaff($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Course Hub</title>
+    <title>Homepage</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Additional Styles for Pagination */
@@ -407,7 +385,7 @@ $staff = getTopStaff($conn);
             </div>
         </section>
 
-        <!-- Filter Section -->
+        <!-- Section -->
         <section class="filter-section">
             <div class="filter-container">
                 <h2>Find Your Perfect Programme</h2>
@@ -517,7 +495,7 @@ $staff = getTopStaff($conn);
                         <div class="staff-content">
                             <h3><?php echo htmlspecialchars($member['Name']); ?></h3>
                             <?php if (!empty($member['ProgrammesLed'])): ?>
-                                <p class="staff-role">Programme Leader: <?php echo htmlspecialchars($member['ProgrammesLed']); ?></p>
+                                <p class="staff-role">Programme: <?php echo htmlspecialchars($member['ProgrammesLed']); ?></p>
                             <?php endif; ?>
                             <?php if (!empty($member['ModulesLed'])): ?>
                                 <p class="staff-modules">Modules: <?php echo htmlspecialchars($member['ModulesLed']); ?></p>
@@ -665,8 +643,8 @@ $staff = getTopStaff($conn);
             
             <div class="footer-section">
                 <h3 class="contact" id="contact">Contact Us</h3>
-                <p>Email: admissions@university.ac.uk</p>
-                <p>Phone: +44 (0)123 456 7890</p>
+                <p>Email: admissions@university.ac.dk</p>
+                <p>Phone: +45 (X)X XX XX XX</p>
             </div>
         </div>
         
