@@ -78,7 +78,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             switch ($userType) {
                 case "admin":
                     $table = "admin_users";
-                    $redirectPage = "staff_dashboard.php";
+                    $redirectPage = "admin_dashboard.php";
                     $sessionPrefix = "admin";
                     break;
                 case "staff":
