@@ -14,8 +14,7 @@ try {
 }
 
 // Function to get all staff members with their modules
-function getStaffWithModules($pdo) {
-    // Query to get staff information and their modules
+function getStaffWithModules($pdo, $departmentFilter = '', $roleFilter = '', $searchTerm = '') {
     $query = "
         SELECT 
             s.StaffID, 
@@ -23,21 +22,69 @@ function getStaffWithModules($pdo) {
             m.ModuleName, 
             m.ModuleID,
             p.ProgrammeName,
-            p.ProgrammeID
+            p.ProgrammeID,
+            l.LevelName
         FROM 
             Staff s
         LEFT JOIN 
             Modules m ON s.StaffID = m.ModuleLeaderID
         LEFT JOIN 
             Programmes p ON s.StaffID = p.ProgrammeLeaderID
-        ORDER BY 
-            s.Name
+        LEFT JOIN
+            Levels l ON p.LevelID = l.LevelID
+        WHERE 1=1
     ";
     
-    $stmt = $pdo->prepare($query);
-    $stmt->execute();
+    $params = [];
     
-    // Group results by staff member
+    // Apply search filter
+    if (!empty($searchTerm)) {
+        $query .= " AND s.Name LIKE :searchTerm";
+        $params[':searchTerm'] = "%$searchTerm%";
+    }
+    
+    // Apply department filter
+    if (!empty($departmentFilter)) {
+        switch($departmentFilter) {
+            case 'comp-sci':
+                $query .= " AND (p.ProgrammeName LIKE '%Computer Science%' OR m.ModuleName LIKE '%Computer%')";
+                break;
+            case 'cyber':
+                $query .= " AND (p.ProgrammeName LIKE '%Cyber%' OR m.ModuleName LIKE '%Security%' OR m.ModuleName LIKE '%Forensics%')";
+                break;
+            case 'ai':
+                $query .= " AND (p.ProgrammeName LIKE '%Artificial%' OR m.ModuleName LIKE '%AI%' OR m.ModuleName LIKE '%Machine Learning%')";
+                break;
+            case 'software':
+                $query .= " AND (p.ProgrammeName LIKE '%Software%' OR m.ModuleName LIKE '%Engineering%')";
+                break;
+        }
+    }
+    
+    // Apply role filter
+    if (!empty($roleFilter)) {
+        switch($roleFilter) {
+            case 'programme-leader':
+                $query .= " AND p.ProgrammeLeaderID IS NOT NULL";
+                break;
+            case 'module-leader':
+                $query .= " AND m.ModuleLeaderID IS NOT NULL";
+                break;
+            case 'professor':
+                $query .= " AND p.ProgrammeLeaderID IS NOT NULL";
+                break;
+            case 'lecturer':
+                $query .= " AND m.ModuleLeaderID IS NOT NULL AND p.ProgrammeLeaderID IS NULL";
+                break;
+        }
+    }
+    
+    $query .= " ORDER BY s.Name";
+    
+    $stmt = $pdo->prepare($query);
+    $stmt->execute($params);
+    
+    // Rest of the function remains the same...
     $staffMembers = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $staffId = $row['StaffID'];
@@ -47,16 +94,15 @@ function getStaffWithModules($pdo) {
                 'id' => $staffId,
                 'name' => $row['Name'],
                 'modules' => [],
-                'programmes' => []
+                'programmes' => [],
+                'level' => $row['LevelName'] ?? null
             ];
         }
         
-        // Add module if one exists
         if ($row['ModuleID']) {
             $staffMembers[$staffId]['modules'][$row['ModuleID']] = $row['ModuleName'];
         }
         
-        // Add programme if one exists
         if ($row['ProgrammeID']) {
             $staffMembers[$staffId]['programmes'][$row['ProgrammeID']] = $row['ProgrammeName'];
         }
@@ -66,12 +112,12 @@ function getStaffWithModules($pdo) {
 }
 
 // Get staff filter parameters if any
-$departmentFilter = isset($_GET['department']) ? $_GET['department'] : '';
-$roleFilter = isset($_GET['role']) ? $_GET['role'] : '';
-$searchTerm = isset($_GET['search']) ? $_GET['search'] : '';
+$departmentFilter = $_GET['department'] ?? '';
+$roleFilter = $_GET['role'] ?? '';
+$searchTerm = $_GET['search'] ?? '';
 
 // Get all staff members with their modules
-$staffMembers = getStaffWithModules($pdo);
+$staffMembers = getStaffWithModules($pdo, $departmentFilter, $roleFilter, $searchTerm);
 
 // Function to determine staff title based on roles
 function getStaffTitle($staff) {
@@ -134,44 +180,56 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
     <nav>
         <ul>
             <li><a href="index.php">Home</a></li>
-            <li><a href="programmes.php">Programmes</a></li>
-            <li><a href="staff_dashboard.php" class="active">Staff</a></li>
-            <li><a href="modules.php">Modules</a></li>
-            <li><a href="contact.php">Contact</a></li>
+            <li><a href="staff_dashboard.php" class="active">Dashboard</a></li>
+            <!-- <li><a href="programmes.php">Programmes</a></li> -->
+            <li><a href="staff.php">Staff</a></li>
+            <!-- <li><a href="contact.php">Contact</a></li> -->
             <li style="margin-left: auto;"><a href="logout.php" class="logout-btn">Logout</a></li>
         </ul>
     </nav>
     
     <main id="main-content">
+        
         <div class="page-header">
             <h2>Academic Staff</h2>
-            <form action="" method="GET" class="search-container">
-                <input type="text" name="search" placeholder="Search staff..." aria-label="Search for staff" value="<?php echo htmlspecialchars($searchTerm); ?>">
-                <button type="submit">Search</button>
-            </form>
         </div>
+        <form action="" method="GET" class="filters">
+            <div class="filter-group">
+                <label for="department">Department:</label>
+                <select name="department" id="department">
+                    <option value="">All Departments</option>
+                    <option value="comp-sci" <?= $departmentFilter == 'comp-sci' ? 'selected' : '' ?>>Computer Science</option>
+                    <option value="cyber" <?= $departmentFilter == 'cyber' ? 'selected' : '' ?>>Cyber Security</option>
+                    <option value="ai" <?= $departmentFilter == 'ai' ? 'selected' : '' ?>>Artificial Intelligence</option>
+                    <option value="software" <?= $departmentFilter == 'software' ? 'selected' : '' ?>>Software Engineering</option>
+                    <option value="data" <?= $departmentFilter == 'data' ? 'selected' : '' ?>>Data Science</option>
+                </select>
+            </div>
+        
+            <div class="filter-group">
+                <label for="role">Role:</label>
+                <select name="role" id="role">
+                    <option value="">All Roles</option>
+                    <option value="programme-leader" <?= $roleFilter == 'programme-leader' ? 'selected' : '' ?>>Programme Leaders</option>
+                    <option value="module-leader" <?= $roleFilter == 'module-leader' ? 'selected' : '' ?>>Module Leaders</option>
+                    <option value="professor" <?= $roleFilter == 'professor' ? 'selected' : '' ?>>Professors</option>
+                    <option value="lecturer" <?= $roleFilter == 'lecturer' ? 'selected' : '' ?>>Lecturers</option>
+                </select>
+            </div>
 
-        
-        
-        
-        <form action="staff.php" method="GET" class="filters">
-            <select name="department" aria-label="Filter by department">
-                <option value="">All Departments</option>
-                <option value="comp-sci" <?php echo $departmentFilter == 'comp-sci' ? 'selected' : ''; ?>>Computer Science</option>
-                <option value="cyber" <?php echo $departmentFilter == 'cyber' ? 'selected' : ''; ?>>Cyber Security</option>
-                <option value="ai" <?php echo $departmentFilter == 'ai' ? 'selected' : ''; ?>>Artificial Intelligence</option>
-                <option value="software" <?php echo $departmentFilter == 'software' ? 'selected' : ''; ?>>Software Engineering</option>
-            </select>
-            
-            <select name="role" aria-label="Filter by role">
-                <option value="">All Roles</option>
-                <option value="programme-leader" <?php echo $roleFilter == 'programme-leader' ? 'selected' : ''; ?>>Programme Leaders</option>
-                <option value="module-leader" <?php echo $roleFilter == 'module-leader' ? 'selected' : ''; ?>>Module Leaders</option>
-                <option value="professor" <?php echo $roleFilter == 'professor' ? 'selected' : ''; ?>>Professors</option>
-                <option value="lecturer" <?php echo $roleFilter == 'lecturer' ? 'selected' : ''; ?>>Lecturers</option>
-            </select>
-            
-            <button type="submit">Apply Filters</button>
+            <div class="filter-group">
+                <label for="level">Level:</label>
+                <select name="level" id="level">
+                    <option value="">All Levels</option>
+                    <option value="undergrad" <?= ($_GET['level'] ?? '') == 'undergrad' ? 'selected' : '' ?>>Undergraduate</option>
+                    <option value="postgrad" <?= ($_GET['level'] ?? '') == 'postgrad' ? 'selected' : '' ?>>Postgraduate</option>
+                </select>
+            </div>
+
+            <button type="submit" class="apply-filters">Apply Filters</button>
+            <?php if ($departmentFilter || $roleFilter || $searchTerm): ?>
+                <a href="staff.php" class="reset-filters">Reset Filters</a>
+            <?php endif; ?>
         </form>
         
         <div class="staff-grid">
@@ -218,19 +276,26 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
         <?php if ($totalPages > 1): ?>
             <div class="pagination">
                 <?php if ($currentPage > 1): ?>
-                    <a href="?page=<?php echo $currentPage - 1; ?>&department=<?php echo urlencode($departmentFilter); ?>&role=<?php echo urlencode($roleFilter); ?>&search=<?php echo urlencode($searchTerm); ?>" aria-label="Previous page">←</a>
+                    <a href="?page=<?= $currentPage - 1 ?>&department=<?= urlencode($departmentFilter) ?>&role=<?= urlencode($roleFilter) ?>&search=<?= urlencode($searchTerm) ?>">←</a>
                 <?php endif; ?>
                 
                 <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                    <a href="?page=<?php echo $i; ?>&department=<?php echo urlencode($departmentFilter); ?>&role=<?php echo urlencode($roleFilter); ?>&search=<?php echo urlencode($searchTerm); ?>" 
-                       <?php echo $i == $currentPage ? 'class="current" aria-current="page"' : ''; ?>>
-                        <?php echo $i; ?>
+                    <a href="?page=<?= $i ?>&department=<?= urlencode($departmentFilter) ?>&role=<?= urlencode($roleFilter) ?>&search=<?= urlencode($searchTerm) ?>"
+                    <?= $i == $currentPage ? 'class="current"' : '' ?>>
+                        <?= $i ?>
                     </a>
                 <?php endfor; ?>
                 
                 <?php if ($currentPage < $totalPages): ?>
-                    <a href="?page=<?php echo $currentPage + 1; ?>&department=<?php echo urlencode($departmentFilter); ?>&role=<?php echo urlencode($roleFilter); ?>&search=<?php echo urlencode($searchTerm); ?>" aria-label="Next page">→</a>
+                    <a href="?page=<?= $currentPage + 1 ?>&department=<?= urlencode($departmentFilter) ?>&role=<?= urlencode($roleFilter) ?>&search=<?= urlencode($searchTerm) ?>">→</a>
                 <?php endif; ?>
+            </div>
+        <?php endif; ?>
+
+        <?php if (empty($staffMembersPage)): ?>
+            <div class="no-results">
+                <p>No staff members found matching your criteria.</p>
+                <a href="staff_dashboard.php">Reset filters</a>
             </div>
         <?php endif; ?>
     </main>

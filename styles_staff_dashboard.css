@@ -38,18 +38,12 @@ nav ul {
     display: flex;
     list-style: none;
     gap: 1.5rem;
-}
-
-nav ul {
-    display: flex;
-    list-style: none;
-    gap: 1.5rem;
     align-items: center;
 }
 
 .logout-btn {
     background-color: var(--error);
-    color: white !important;
+    color: white;
     padding: 0.5rem 1rem;
     border-radius: 0.25rem;
     transition: background-color 0.3s;
@@ -58,19 +52,6 @@ nav ul {
 .logout-btn:hover {
     background-color: #dc2626;
     border-bottom: none;
-}
-
-@media (max-width: 768px) {
-nav ul {
-    flex-direction: column;
-    gap: 0.5rem;
-    align-items: flex-start;
-}
-
-li[style="margin-left: auto;"] {
-    margin-left: 0 !important;
-    margin-top: 0.5rem;
-}
 }
 
 nav a {
@@ -84,6 +65,14 @@ nav a {
 nav a:hover, nav a.active {
     color: var(--secondary);
     border-bottom: 2px solid var(--secondary);
+}
+
+.reset-filters:hover {
+    text-decoration: underline;
+}
+
+.apply-filters:hover {
+    background-color: #0052a3;
 }
 
 main {
@@ -129,7 +118,11 @@ button:hover {
 .filters {
     display: flex;
     gap: 1rem;
-    margin-bottom: 1.5rem;
+    align-items: flex-end;
+    margin-bottom: 2rem;
+    padding: 1rem;
+    background: #f5f5f5;
+    border-radius: 5rem;
 }
 
 .staff-grid {
@@ -149,13 +142,6 @@ button:hover {
 .staff-card:hover {
     transform: translateY(-5px);
     box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-}
-
-.staff-photo {
-    width: 100%;
-    height: 200px;
-    object-fit: cover;
-    background-color: #e2e8f0;
 }
 
 .staff-info {
@@ -198,22 +184,6 @@ footer {
     margin-top: 3rem;
 }
 
-@media (max-width: 768px) {
-    nav ul {
-        flex-direction: column;
-        gap: 0.5rem;
-    }
-    
-    .page-header {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 1rem;
-    }
-    
-    .filters {
-        flex-direction: column;
-    }
-}
 
 .pagination {
     display: flex;
@@ -264,24 +234,101 @@ footer {
     color: #0369a1;
 }
 
-.accessibility-controls {
+.filter-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.filters label {
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    font-size: 0.9rem;
+}
+
+.filters select, .filters input[type="text"] {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+.apply-filters {
     padding: 0.5rem 1rem;
-    background-color: #f8fafc;
-    margin-bottom: 1rem;
-    border-radius: 0.25rem;
-}
-
-.skip-link {
-    position: absolute;
-    left: -9999px;
-    top: 1rem;
-    z-index: 999;
-}
-
-.skip-link:focus {
-    left: 1rem;
-    background: var(--primary);
+    background-color: #0066cc;
     color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    height: fit-content;
+}
+
+.reset-filters {
     padding: 0.5rem 1rem;
-    border-radius: 0.25rem;
+    color: #0066cc;
+    text-decoration: none;
+    height: fit-content;
+}
+
+header {
+    position: relative;
+    background-color: var(--primary); /* Fallback color */
+    background-image: url('https://www.shutterstock.com/image-photo/asian-teenager-students-doing-robot-600nw-2221748207.jpg');
+    background-size: cover;
+    background-position: center;
+    background-blend-mode: overlay; /* Blends image with bg color */
+    color: white;
+    padding: 1rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    overflow: hidden; /* Keeps pseudo-element contained */
+    background: 
+        linear-gradient(rgba(30, 58, 138, 0.8)), /* var(--primary) with opacity */
+        url('https://www.shutterstock.com/image-photo/asian-teenager-students-doing-robot-600nw-2221748207.jpg') center/cover no-repeat;
+    text-shadow: 1px 1px 3px rgba(0,0,0,0.5);
+    text-align: center;    
+}
+
+header::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-image: url('https://www.shutterstock.com/image-photo/asian-teenager-students-doing-robot-600nw-2221748207.jpg');
+    background-size: cover;
+    background-position: center;
+    opacity: 0.5; /* Adjust transparency */
+    z-index: -1;
+}
+
+
+@media (max-width: 768px) {
+    nav ul {
+        flex-direction: column;
+        gap: 0.5rem;
+        align-items: flex-start;
+    }
+    
+    li[style="margin-left: auto;"] {
+        margin-left: 0 !important;
+        margin-top: 0.5rem;
+    }
+    
+    .page-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 1rem;
+    }
+    
+    .filters {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    header {
+        background-position: 60% center; /* Adjust for mobile */
+    }
+    
+    header::before {
+        opacity: 0.3; /* More transparent on small screens */
+    }
 }
