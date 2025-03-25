@@ -34,7 +34,7 @@ try {
     
     // Staff users table
     $conn->exec("CREATE TABLE IF NOT EXISTS staff_users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
+        StaffID INT AUTO_INCREMENT PRIMARY KEY,
         username VARCHAR(50) NOT NULL UNIQUE,
         password VARCHAR(255) NOT NULL,
         name VARCHAR(100) NOT NULL,
@@ -42,16 +42,6 @@ try {
         created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
     )");
     
-    // Student users table
-    $conn->exec("CREATE TABLE IF NOT EXISTS student_users (
-        id INT AUTO_INCREMENT PRIMARY KEY,
-        username VARCHAR(50) NOT NULL UNIQUE,
-        password VARCHAR(255) NOT NULL,
-        name VARCHAR(100) NOT NULL,
-        student_id VARCHAR(20),
-        major VARCHAR(100),
-        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
-    )");
 } catch(PDOException $e) {
     die("Database setup error: " . $e->getMessage());
 }
