@@ -4,7 +4,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION["admin_logged_in"]) || $_SESSION["admin_logged_in"] !== true) {
-    header("Location: ../adminlogin.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -70,7 +70,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                         $message = "Staff ID does not exist.";
                     } else {
                         // Add new staff user
-                        $stmt = $conn->prepare("INSERT INTO staff_users (Username, Password, StaffID) VALUES (:username, :password, :staff_id)");
+                        $stmt = $conn->prepare("INSERT INTO staff_users (Username, Password, id) VALUES (:username, :password, :staff_id)");
                         $stmt->bindParam(':username', $username);
                         $stmt->bindParam(':password', $hashed_password);
                         $stmt->bindParam(':staff_id', $staff_id);
