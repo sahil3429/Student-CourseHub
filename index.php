@@ -11,15 +11,16 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Function to get all programmes
+// Function To Get All Programmes
 function getAllProgrammes($conn) {
-    $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, p.Image, 
+    $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, 
             l.LevelName, s.Name as LeaderName 
             FROM Programmes p
             JOIN Levels l ON p.LevelID = l.LevelID
             JOIN Staff s ON p.ProgrammeLeaderID = s.StaffID";
     $result = $conn->query($sql);
     
+    //Fetching rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -37,12 +38,19 @@ function getProgrammesByLevel($conn, $levelId) {
             JOIN Levels l ON p.LevelID = l.LevelID
             JOIN Staff s ON p.ProgrammeLeaderID = s.StaffID
             WHERE p.LevelID = ?";
-    
+    //Database Prepared Statement
     $stmt = $conn->prepare($sql);
+    
+    //Binding Integar Parameter
     $stmt->bind_param("i", $levelId);
+
+    //Execution of the statement
     $stmt->execute();
+    
+    //Retrieving the result
     $result = $stmt->get_result();
     
+    //Fetching Rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -52,7 +60,7 @@ function getProgrammesByLevel($conn, $levelId) {
     return $programmes;
 }
 
-// Function to search programmes
+// Function to get programmes by Search
 function searchProgrammes($conn, $search) {
     $searchTerm = "%$search%";
     $sql = "SELECT p.ProgrammeID, p.ProgrammeName, p.Description, p.Image, 
@@ -63,11 +71,13 @@ function searchProgrammes($conn, $search) {
             WHERE p.ProgrammeName LIKE ? 
             OR p.Description LIKE ?";
     
+    //Database Prepared Statement
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("ss", $searchTerm, $searchTerm);
     $stmt->execute();
     $result = $stmt->get_result();
     
+    //Fetching Rows from the result
     $programmes = [];
     if ($result->num_rows > 0) {
         while ($row = $result->fetch_assoc()) {
@@ -145,7 +155,7 @@ function getTopStaff($conn) {
 }
 
 // Function to register interest
-function registerInterest($conn, $programmeId, $name, $email, $comments) {
+function registerInterest($conn, $programmeId, $name, $email) {
     // Change this line to match your table structure
     $sql = "INSERT INTO InterestedStudents (ProgrammeID, StudentName, Email) 
             VALUES (?, ?, ?)";
@@ -156,7 +166,7 @@ function registerInterest($conn, $programmeId, $name, $email, $comments) {
         return false;
     }
     
-    // Modified to use only three parameters
+    // Modified to use only three parameters, iss=integers, strings, strings
     $stmt->bind_param("iss", $programmeId, $name, $email);
     
     if ($stmt->execute()) {
@@ -166,15 +176,7 @@ function registerInterest($conn, $programmeId, $name, $email, $comments) {
     error_log("Execute failed: " . $stmt->error);
     return false;
 }
-// Handle admin login
-function verifyAdmin($username, $password) {
-    // In a real application, this would check against a secure database
-    // This is a simple example - use proper authentication in production
-    if ($username === "admin" && $password === "password") {
-        return true;
-    }
-    return false;
-}
+
 
 // Initialize variables
 $programmes = [];
@@ -247,37 +249,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['register_interest'])) 
     $studentName = $_POST['student_name'];
     $studentEmail = $_POST['student_email'];
     $programmeId = $_POST['programme_id'];
-    $comments = isset($_POST['student_comments']) ? $_POST['student_comments'] : "";
     
-    if (registerInterest($conn, $programmeId, $studentName, $studentEmail, $comments)) {
+    if (registerInterest($conn, $programmeId, $studentName, $studentEmail)) {
         $registrationSuccess = true;
     } else {
         $registrationError = "Failed to register interest. Please try again.";
     }
 }
 
-// Handle admin login
-$adminLoggedIn = false;
-$loginError = "";
 
-if ($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST['admin_login'])) {
-    $username = $_POST['admin_username'];
-    $password = $_POST['admin_password'];
-    
-    if (verifyAdmin($username, $password)) {
-        session_start();
-        $_SESSION['admin_logged_in'] = true;
-        $adminLoggedIn = true;
-    } else {
-        $loginError = "Invalid username or password";
-    }
-}
-
-// Check if admin is already logged in
-session_start();
-if (isset($_SESSION['admin_logged_in']) && $_SESSION['admin_logged_in'] === true) {
-    $adminLoggedIn = true;
-}
 
 // Get top 3 staff for staff section
 $staff = getTopStaff($conn);
@@ -289,7 +269,7 @@ $staff = getTopStaff($conn);
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>University Course Hub</title>
+    <title>Homepage</title>
     <link rel="stylesheet" href="styles.css">
     <style>
         /* Additional Styles for Pagination */
@@ -405,7 +385,7 @@ $staff = getTopStaff($conn);
             </div>
         </section>
 
-        <!-- Filter Section -->
+        <!-- Section -->
         <section class="filter-section">
             <div class="filter-container">
                 <h2>Find Your Perfect Programme</h2>
@@ -515,7 +495,7 @@ $staff = getTopStaff($conn);
                         <div class="staff-content">
                             <h3><?php echo htmlspecialchars($member['Name']); ?></h3>
                             <?php if (!empty($member['ProgrammesLed'])): ?>
-                                <p class="staff-role">Programme Leader: <?php echo htmlspecialchars($member['ProgrammesLed']); ?></p>
+                                <p class="staff-role">Programme: <?php echo htmlspecialchars($member['ProgrammesLed']); ?></p>
                             <?php endif; ?>
                             <?php if (!empty($member['ModulesLed'])): ?>
                                 <p class="staff-modules">Modules: <?php echo htmlspecialchars($member['ModulesLed']); ?></p>
@@ -533,11 +513,7 @@ $staff = getTopStaff($conn);
                 <h1><?php echo htmlspecialchars($programmeDetail['ProgrammeName']); ?></h1>
                 <span class="level-tag"><?php echo htmlspecialchars($programmeDetail['LevelName']); ?></span>
             </div>
-            
-            <div class="programme-image">
-                <img src="<?php echo !empty($programmeDetail['Image']) ? htmlspecialchars($programmeDetail['Image']) : '/api/placeholder/800/400'; ?>" alt="<?php echo htmlspecialchars($programmeDetail['ProgrammeName']); ?>">
-            </div>
-            
+                        
             <div class="programme-description">
                 <h2>Description</h2>
                 <p><?php echo htmlspecialchars($programmeDetail['Description']); ?></p>
@@ -663,8 +639,8 @@ $staff = getTopStaff($conn);
             
             <div class="footer-section">
                 <h3 class="contact" id="contact">Contact Us</h3>
-                <p>Email: admissions@university.ac.uk</p>
-                <p>Phone: +44 (0)123 456 7890</p>
+                <p>Email: admissions@university.ac.dk</p>
+                <p>Phone: +45 (X)X XX XX XX</p>
             </div>
         </div>
         
