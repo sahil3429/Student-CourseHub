@@ -11,8 +11,8 @@ if (!isset($_SESSION["admin_logged_in"]) || $_SESSION["admin_logged_in"] !== tru
 // Database connection
 $host = "localhost";
 $dbname = "student_course_hub";
-$username = "root"; // Update with your database username
-$password = ""; // Update with your database password
+$username = "root"; 
+$password = ""; 
 
 try {
     $conn = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
