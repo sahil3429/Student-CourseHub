@@ -16,9 +16,6 @@ try {
     die("Connection failed: " . $e->getMessage());
 }
 
-// Check if coming from logout
-$show_logout_message = isset($_GET['logout']) && $_GET['logout'] === 'success';
-
 // Initialize variables
 $error = "";
 $username = "";
@@ -134,7 +131,102 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login - University Course Hub</title>
-    <link rel="stylesheet" href="styles_stafflogin.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        
+        body {
+            width: 100%;
+            height: 100vh;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/044/610/581/non_2x/single-one-line-drawing-of-open-text-book-for-study-minimalistic-background-back-to-school-minimalist-education-concept-continuous-simple-line-draw-style-design-graphic-illustration-vector.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+                        
+        }
+        .login-container {
+            max-width: 400px;
+            margin: 80px auto;
+            padding: 30px;
+            background-color: #FFF;
+            border-radius: 8px;
+            box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-container h1 {
+            text-align: center;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        .form-group {
+            margin-bottom: 20px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+        
+        .form-group input {
+            width: 100%;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-size: 16px;
+        }
+        
+        .user-type-selector {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 20px;
+        }
+        
+        .user-type-option {
+            flex: 1;
+            text-align: center;
+        }
+        
+        .user-type-option input {
+            margin-right: 5px;
+        }
+        
+        .error-message {
+            color: #e74c3c;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 500;
+        }
+        
+        .btn-login {
+            display: block;
+            width: 100%;
+            padding: 12px;
+            background-color: #1a3a6e;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            font-size: 16px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        
+        .btn-login:hover {
+            background-color: #2980b9;
+        }
+        
+        .back-link {
+            display: block;
+            text-align: center;
+            margin-top: 20px;
+            color: #3498db;
+            text-decoration: none;
+        }
+        
+        .back-link:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <div class="login-container">
@@ -143,43 +235,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <?php if (!empty($error)): ?>
             <div class="error-message"><?php echo $error; ?></div>
         <?php endif; ?>
-		
-		<?php if ($show_logout_message): ?>
-    <div id="logout-notification" class="notification">
-        You have been successfully logged out.
-    </div>
-
-    <script>
-        // Show notification
-        const notification = document.getElementById('logout-notification');
-        setTimeout(() => {
-            notification.classList.add('show');
-        }, 100);
-        
-        // Hide after 3 seconds
-        setTimeout(() => {
-            notification.classList.remove('show');
-        }, 3000);
-        
-        // Remove from DOM after fade out
-        setTimeout(() => {
-            notification.remove();
-        }, 3300);
-        
-        // Remove the logout parameter from URL
-        if (window.history && window.history.replaceState) {
-            const url = window.location.href.split('?')[0];
-            window.history.replaceState({}, document.title, url);
-        }
-    </script>
-    <?php endif; ?>
         
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <div class="user-type-selector">
-                <div class="user-type-option">
-                    <input type="radio" id="student" name="user_type" value="student" <?php echo ($userType == "student" || empty($userType)) ? "checked" : ""; ?>>
-                    <label for="student">Student</label>
-                </div>
+               
                 <div class="user-type-option">
                     <input type="radio" id="staff" name="user_type" value="staff" <?php echo ($userType == "staff") ? "checked" : ""; ?>>
                     <label for="staff">Staff</label>
