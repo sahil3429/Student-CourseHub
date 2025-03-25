@@ -536,7 +536,7 @@ $staff = getTopStaff($conn);
                 }
                 ?>
                 
-                <!-- Year tabs using PHP links instead of JavaScript -->
+                <!-- Tabs -->
                 <div class="module-year-tabs">
                     <?php for ($i = 1; $i <= count($programmeModules); $i++): ?>
                         <a href="index.php?view=<?php echo $programmeDetail['ProgrammeID']; ?>&year=<?php echo $i; ?>" 

@@ -4,14 +4,14 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION["admin_logged_in"]) || $_SESSION["admin_logged_in"] !== true) {
-    header("Location: ../adminlogin.php");
+    header("Location: ../login.php");
     exit();
 }
 
 // Check if type and id parameters are set
 if (!isset($_GET['type']) || !isset($_GET['id'])) {
     $_SESSION['error_message'] = "Missing required parameters";
-    header("Location: index.php?section=password-management");
+    header("Location: admin_dashboard.php?section=password-management");
     exit();
 }
 
@@ -21,7 +21,7 @@ $id = $_GET['id'];
 // Validate type parameter
 if ($type !== 'admin' && $type !== 'staff') {
     $_SESSION['error_message'] = "Invalid user type";
-    header("Location: index.php?section=password-management");
+    header("Location: admin_dashboard.php?section=password-management");
     exit();
 }
 
@@ -59,7 +59,7 @@ try {
         $stmt->execute();
     } else {
         // Delete staff user
-        $stmt = $conn->prepare("DELETE FROM staff_users WHERE id = :id");
+        $stmt = $conn->prepare("DELETE FROM staff_users WHERE StaffId = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }

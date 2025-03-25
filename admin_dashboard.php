@@ -4,7 +4,7 @@ session_start();
 
 // Check if user is logged in
 if (!isset($_SESSION["admin_logged_in"]) || $_SESSION["admin_logged_in"] !== true) {
-    header("Location: ../adminlogin.php");
+    header("Location: ../login.php");
     exit();
 }
 
@@ -594,6 +594,8 @@ if (isset($_GET['section']) && in_array($_GET['section'], $valid_sections)) {
     </div>
     
     <!-- Staff Users Section -->
+    
+    
     <div class="password-section" style="margin-top: 30px;">
         <h3>Staff Users</h3>
         <div class="admin-actions">
