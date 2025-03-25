@@ -13,6 +13,76 @@ try {
     die("Database connection failed: " . $e->getMessage());
 }
 
+/*
+try {
+    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
+    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+
+    if (isset($_SESSION["staff_id"])) {
+        $staff_id = $_SESSION["staff_id"];
+
+        $stmt = $pdo->prepare("SELECT StaffID, Name FROM staff WHERE StaffID = ?");
+        $stmt->execute([$staff_id]);
+        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+
+        $staff_name = $row ? $row["Name"] : "Staff";
+        $staff_id = $row ? $row["StaffID"] : null;
+    } else {
+        $staff_name = "Staff";
+        $staff_id = null;
+    }
+    
+    echo "Welcome, " . htmlspecialchars($staff_name);
+} catch (PDOException $e) {
+    die("Connection failed: " . $e->getMessage());
+}
+*/
+
+// Later added for showing staff user Name becuase pdo wan't working.
+
+session_start(); // Start the session
+
+// Database connection
+$servername = "localhost"; // Change to your server details
+$username = "root"; // Database username
+$password = ""; // Database password
+$dbname = "student_course_hub"; // Database name
+
+$conn = new mysqli($servername, $username, $password, $dbname);
+
+// Check connection
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Check if session contains staff_id
+if (isset($_SESSION["staff_id"])) {
+    $staff_id = $_SESSION["staff_id"];
+
+    // Prepare and execute query
+    $stmt = $conn->prepare("SELECT StaffID, Name FROM staff WHERE StaffID = ?");
+    $stmt->bind_param("i", $staff_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    // Fetch data
+    if ($row = $result->fetch_assoc()) {
+        $staff_name = $row["Name"];
+        $staff_id = $row["StaffID"];
+    } else {
+        $staff_name = "Staff"; // Default if no record is found
+        $staff_id = null;
+    }
+
+    $stmt->close();
+} else {
+    $staff_name = "Staff";
+    $staff_id = null;
+}
+
+// Close the connection
+$conn->close();
+
 // Function to get all staff members with their modules
 function getStaffWithModules($pdo, $departmentFilter = '', $roleFilter = '', $searchTerm = '') {
     $query = "
@@ -161,6 +231,8 @@ if ($currentPage > $totalPages) $currentPage = $totalPages;
 // Calculate the slice of staff members for the current page
 $startIndex = ($currentPage - 1) * $itemsPerPage;
 $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true);
+
+ 
 ?>
 
 <!DOCTYPE html>
@@ -188,6 +260,13 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
             <li style="margin-left: auto;"><a href="logout.php" class="logout-btn">Logout</a></li>
         </ul>
     </nav>
+
+    <div class="staff-container">
+        <div style="text-align: center;">
+            <h1>Staff Dashboard</h1>
+            <div>
+                <span><strong>Welcome, <?php echo htmlspecialchars($staff_name); ?></strong></span>
+        </div>
     
     <main id="main-content">
         
