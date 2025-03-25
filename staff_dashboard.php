@@ -168,7 +168,7 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Staff - Student Course Hub</title>
+    <title>Academic Staff - Student Course Hub <br> <?= $pageTitle ?> </title>
     <link rel="stylesheet" href="styles_staff_dashboard.css">
 </head>
 <body>
@@ -184,6 +184,7 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
             <!-- <li><a href="programmes.php">Programmes</a></li> -->
             <li><a href="staff.php">Staff</a></li>
             <!-- <li><a href="contact.php">Contact</a></li> -->
+
             <li style="margin-left: auto;"><a href="logout.php" class="logout-btn">Logout</a></li>
         </ul>
     </nav>
