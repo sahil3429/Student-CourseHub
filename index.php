@@ -155,7 +155,7 @@ function getTopStaff($conn) {
 }
 
 // Function to register interest
-function registerInterest($conn, $programmeId, $name, $email, $comments) {
+function registerInterest($conn, $programmeId, $name, $email) {
     // Change this line to match your table structure
     $sql = "INSERT INTO InterestedStudents (ProgrammeID, StudentName, Email) 
             VALUES (?, ?, ?)";
@@ -362,7 +362,7 @@ $staff = getTopStaff($conn);
                     <li><a href="index.php#programmes">Programmes</a></li>
                     <li><a href="index.php#staff">Staff</a></li>
                     <li><a href="index.php#contact">Contact</a></li>
-                    <li><a href="adminlogin.php" class="admin-btn">Login</a></li>
+                    <li><a href="login.php" class="admin-btn">Login</a></li>
                 </ul>
             </div>
         </nav>
@@ -513,11 +513,7 @@ $staff = getTopStaff($conn);
                 <h1><?php echo htmlspecialchars($programmeDetail['ProgrammeName']); ?></h1>
                 <span class="level-tag"><?php echo htmlspecialchars($programmeDetail['LevelName']); ?></span>
             </div>
-            
-            <div class="programme-image">
-                <img src="<?php echo !empty($programmeDetail['Image']) ? htmlspecialchars($programmeDetail['Image']) : '/api/placeholder/800/400'; ?>" alt="<?php echo htmlspecialchars($programmeDetail['ProgrammeName']); ?>">
-            </div>
-            
+                        
             <div class="programme-description">
                 <h2>Description</h2>
                 <p><?php echo htmlspecialchars($programmeDetail['Description']); ?></p>
