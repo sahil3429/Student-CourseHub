@@ -14,6 +14,6 @@ if (isset($_COOKIE[session_name()])) {
 session_destroy();
 
 // Redirect to the admin login page
-header("Location: ../adminlogin.php");
+header("Location: ../login.php");
 exit();
 ?>

@@ -133,11 +133,20 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Login - University Course Hub</title>
     <link rel="stylesheet" href="styles.css">
     <style>
+        
+        body {
+            width: 100%;
+            height: 100vh;
+            background-image: url('https://static.vecteezy.com/system/resources/previews/044/610/581/non_2x/single-one-line-drawing-of-open-text-book-for-study-minimalistic-background-back-to-school-minimalist-education-concept-continuous-simple-line-draw-style-design-graphic-illustration-vector.jpg');
+            background-repeat: no-repeat;
+            background-size: cover;
+                        
+        }
         .login-container {
             max-width: 400px;
             margin: 80px auto;
             padding: 30px;
-            background-color: #fff;
+            background-color: #FFF;
             border-radius: 8px;
             box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
         }
@@ -229,10 +238,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         
         <form method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
             <div class="user-type-selector">
-                <div class="user-type-option">
-                    <input type="radio" id="student" name="user_type" value="student" <?php echo ($userType == "student" || empty($userType)) ? "checked" : ""; ?>>
-                    <label for="student">Student</label>
-                </div>
+               
                 <div class="user-type-option">
                     <input type="radio" id="staff" name="user_type" value="staff" <?php echo ($userType == "staff") ? "checked" : ""; ?>>
                     <label for="staff">Staff</label>
