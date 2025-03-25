@@ -59,7 +59,7 @@ try {
         $stmt->execute();
     } else {
         // Delete staff user
-        $stmt = $conn->prepare("DELETE FROM staff_users WHERE StaffId = :id");
+        $stmt = $conn->prepare("DELETE FROM staff_users WHERE id = :id");
         $stmt->bindParam(':id', $id);
         $stmt->execute();
     }
