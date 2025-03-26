@@ -1,7 +1,5 @@
 # Student-CourseHub
 
-# Student-CourseHub
-
 Web_Project Assingment Group 10
 
 
