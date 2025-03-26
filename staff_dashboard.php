@@ -3,9 +3,9 @@
 $host = "localhost";
 $dbname = "student_course_hub";
 $username = "root";
-$password = ""; // Set your database password here if needed
+$password = "";
 
-// Create database connection
+// Database connection
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -38,15 +38,15 @@ try {
 }
 */
 
-// Later added for showing staff user Name becuase pdo wan't working.
+// Later added for showing staff user Name becuase pdo wasn't working.
 
 session_start(); // Start the session
 
 // Database connection
-$servername = "localhost"; // Change to your server details
-$username = "root"; // Database username
-$password = ""; // Database password
-$dbname = "student_course_hub"; // Database name
+$servername = "localhost"; 
+$username = "root"; 
+$password = ""; 
+$dbname = "student_course_hub"; 
 
 $conn = new mysqli($servername, $username, $password, $dbname);
 
@@ -308,7 +308,7 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
 
             <button type="submit" class="apply-filters">Apply Filters</button>
             <?php if ($departmentFilter || $roleFilter || $searchTerm): ?>
-                <a href="staff.php" class="reset-filters">Reset Filters</a>
+                <a href="staff_dashboard.php" class="reset-filters">Reset Filters</a>
             <?php endif; ?>
         </form>
         
