@@ -17,7 +17,7 @@ $staffMembers = getAllStaff($pdo);
     <title>Academic Staff - Student Course Hub</title>
     <link rel="stylesheet" href="styles_staff_dashboard.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
+        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
         .container { max-width: 1200px; margin: 0 auto; }
         h1 { color: #333; }
         table { width: 100%; border-collapse: collapse; margin-top: 20px; }
