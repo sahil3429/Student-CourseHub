@@ -639,7 +639,7 @@ $staff = getTopStaff($conn);
             
             <div class="footer-section">
                 <h3 class="contact" id="contact">Contact Us</h3>
-                <p>Email: admissions@university.ac.dk</p>
+                <p >Email: <a href="mailto:admissions@university.ac.uk">admissions@university.ac.dk</a></p>
                 <p>Phone: +45 (X)X XX XX XX</p>
             </div>
         </div>

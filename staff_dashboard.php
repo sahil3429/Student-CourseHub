@@ -154,7 +154,6 @@ function getStaffWithModules($pdo, $departmentFilter = '', $roleFilter = '', $se
     $stmt = $pdo->prepare($query);
     $stmt->execute($params);
     
-    // Rest of the function remains the same...
     $staffMembers = [];
     while ($row = $stmt->fetch(PDO::FETCH_ASSOC)) {
         $staffId = $row['StaffID'];
@@ -202,8 +201,7 @@ function getStaffTitle($staff) {
 
 // Function to get department based on modules/programmes (simplified version)
 function getStaffDepartment($staff) {
-    // This is a simplified implementation
-    // In a real app, you'd have a departments table or more logic
+    // This is just a simplified implementation
     $programmeName = reset($staff['programmes']);
     if (strpos($programmeName, 'Cyber') !== false) {
         return 'Cyber Security';
@@ -240,12 +238,12 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Academic Staff - Student Course Hub <br> <?= $pageTitle ?> </title>
+    <title>Academic Staff - University Course Hub <br> <?= $pageTitle ?> </title>
     <link rel="stylesheet" href="styles_staff_dashboard.css">
 </head>
 <body>
     <header>
-        <a href="index.php"><h1 style="color: white;">Student Course Hub</h1></a>
+        <a href="index.php"style="text-decoration: none;"><h1 style="color: white;">University Course Hub</h1></a>
         <p>University of Excellence</p>
     </header>
     
@@ -381,8 +379,8 @@ $staffMembersPage = array_slice($staffMembers, $startIndex, $itemsPerPage, true)
     </main>
     
     <footer>
-        <p>© 2025 University of Excellence - Student Course Hub</p>
-        <p>Contact: <a href="mailto:admissions@example.ac.uk" style="color: white;">admissions@example.ac.uk</a></p>
+        <p>© 2025 University of Excellence - University Course Hub</p>
+        <p>Contact: <a href="mailto:admissions@university.ac.uk" style="color: white;">admissions@university.ac.uk</a></p>
     </footer>
 
     <script>
