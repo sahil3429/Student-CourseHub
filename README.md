@@ -1,7 +1,5 @@
 # Student-CourseHub
 
-# Student-CourseHub
-
 Web_Project Assingment Group 10
 
 
@@ -18,16 +16,16 @@ Web_Project Assingment Group 10
     9. database_connection.php  --- Functionality of connectiong database.
     10. functions.php           --- Functionability of showing staff memebers and details.
     11. styles_staff_dashboard.css --- CSS file for staff dashboard.
-    13. styles.css              --- CSS file for index or landing page.
-    14. add_user.php            --- File for adding user from admin_dashboard.
-    15. delete.phh              --- File for writing functionability of delettion.
-    16. manage_modules.php      --- functionabilty for managing modules.
-    17. module_form.php         --- functionability for managing module form.
-    18. programme_form.php      --- functionability for programme form.
-    19. change_password.php     --- fuctionability for changing password from admin_dashboard.
-    20. delete_user.php         --- functionability for deleting users from admin_dashboard.
-    21. staff_form.php          --- functionability for staff form.
-    22. export_students.php     --- functionability of exporting using database.
+    12. styles.css              --- CSS file for index or landing page.
+    13. add_user.php            --- File for adding user from admin_dashboard.
+    14. delete.phh              --- File for writing functionability of delettion.
+    15. manage_modules.php      --- functionabilty for managing modules.
+    16. module_form.php         --- functionability for managing module form.
+    17. programme_form.php      --- functionability for programme form.
+    18. change_password.php     --- fuctionability for changing password from admin_dashboard.
+    19. delete_user.php         --- functionability for deleting users from admin_dashboard.
+    20. staff_form.php          --- functionability for staff form.
+    21. export_students.php     --- functionability of exporting using database.
 
 
 ***Workflow Description***
