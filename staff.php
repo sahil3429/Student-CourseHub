@@ -17,13 +17,33 @@ $staffMembers = getAllStaff($pdo);
     <title>Academic Staff - Student Course Hub</title>
     <link rel="stylesheet" href="styles_staff_dashboard.css">
     <style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 0; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #333; }
-        table { width: 100%; border-collapse: collapse; margin-top: 20px; }
-        th, td { padding: 12px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
-        tr:hover { background-color: #f5f5f5; }
+        body { 
+            font-family: Arial, sans-serif; 
+            margin: 0; padding: 0; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            color: #333; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 20px; 
+        }
+        th, td { 
+            padding: 12px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
+        tr:hover { 
+            background-color: #f5f5f5; 
+        }
         .action-btns a { 
             display: inline-block; 
             padding: 5px 10px; 
@@ -31,9 +51,18 @@ $staffMembers = getAllStaff($pdo);
             text-decoration: none; 
             border-radius: 4px; 
         }
-        .view-btn { background-color: #4CAF50; color: white; }
-        .edit-btn { background-color: #2196F3; color: white; }
-        .delete-btn { background-color: #f44336; color: white; }
+        .view-btn { 
+            background-color: #4CAF50; 
+            color: white; 
+        }
+        .edit-btn { 
+            background-color: #2196F3; 
+            color: white; 
+        }
+        .delete-btn { 
+            background-color: #f44336; 
+            color: white; 
+        }
         .add-btn { 
             display: inline-block; 
             padding: 10px 15px; 
@@ -50,13 +79,19 @@ $staffMembers = getAllStaff($pdo);
             font-size: 12px;
             margin-right: 5px;
         }
-        .module-leader { background-color: #FFC107; color: #000; }
-        .programme-leader { background-color: #9C27B0; color: #fff; }
+        .module-leader { 
+            background-color: #FFC107; 
+            color: #000; 
+        }
+        .programme-leader { 
+            background-color: #9C27B0; 
+            color: #fff; 
+        }
     </style>
 </head>
 <body>
     <header>
-        <a href="index.php"><h1 style="color: white;">Student Course Hub</h1></a>
+        <a href="index.php" style="text-decoration: none;"><h1 style="color: white;">University Course Hub</h1></a>
         <p>University of Excellence</p>
     </header>
     
@@ -106,5 +141,9 @@ $staffMembers = getAllStaff($pdo);
             </tbody>
         </table>
     </div>
+    <footer>
+        <p>© 2025 University of Excellence - University Course Hub</p>
+        <p>Contact: <a href="mailto:admissions@university.ac.uk" style="color: white;">admissions@university.ac.uk</a></p>
+    </footer>
 </body>
 </html>

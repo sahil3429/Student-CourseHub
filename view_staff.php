@@ -22,22 +22,40 @@ $pageTitle = "Staff Details: " . $staff['Name'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?= $pageTitle ?></title>
     <link rel="stylesheet" href="styles_staff_dashboard.css">
-   
-</head>
-<body>
-    <header>
-        <a href="index.php"><h1 style="color: white;">Student Course Hub</h1></a>
-        <p>University of Excellence</p>
-    </header>
     <Style>
-        body { font-family: Arial, sans-serif; margin: 0; padding: 20px; }
-        .container { max-width: 1200px; margin: 0 auto; }
-        h1 { color: #333; }
-        .staff-info { background-color: #f9f9f9; padding: 20px; border-radius: 5px; }
-        .section { margin-top: 20px; }
-        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
-        th, td { padding: 10px; text-align: left; border-bottom: 1px solid #ddd; }
-        th { background-color: #f2f2f2; }
+        body { 
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0; 
+        }
+        .container { 
+            max-width: 1200px; 
+            margin: 0 auto; 
+        }
+        h1 { 
+            color: #333; 
+        }
+        .staff-info { 
+            background-color: #f9f9f9; 
+            padding: 20px; 
+            border-radius: 5px; 
+        }
+        .section { 
+            margin-top: 20px; 
+        }
+        table { 
+            width: 100%; 
+            border-collapse: collapse; 
+            margin-top: 10px; 
+        }
+        th, td { 
+            padding: 10px; 
+            text-align: left; 
+            border-bottom: 1px solid #ddd; 
+        }
+        th { 
+            background-color: #f2f2f2; 
+        }
         .back-btn { 
             display: inline-block; 
             padding: 8px 15px; 
@@ -48,7 +66,12 @@ $pageTitle = "Staff Details: " . $staff['Name'];
             margin-top: 20px;
         }
     </Style>
-    
+</head>
+<body>
+    <header>
+        <a href="index.php" style="text-decoration: none;"><h1 style="color: white;">University Course Hub</h1></a>
+        <p>University of Excellence</p>
+    </header>
     <nav>
         <ul>
             <li><a href="index.php">Home</a></li>
@@ -122,5 +145,10 @@ $pageTitle = "Staff Details: " . $staff['Name'];
         
         <a href="staff.php" class="back-btn">Back to Staff List</a>
     </div>
+
+    <footer>
+        <p>© 2025 University of Excellence - University Course Hub</p>
+        <p>Contact: <a href="mailto:admissions@university.ac.uk" style="color: white;">admissions@university.ac.uk</a></p>
+    </footer>
 </body>
 </html>
