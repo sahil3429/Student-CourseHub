@@ -1,11 +1,10 @@
 <?php
-// Database connection settings
+// Database connection
 $host = "localhost";
 $dbname = "student_course_hub";
 $username = "root";
 $password = "";
 
-// Database connection
 try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
@@ -18,7 +17,7 @@ try {
     $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
     $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-    if (isset($_SESSION["staff_id"])) {
+   /* if (isset($_SESSION["staff_id"])) {
         $staff_id = $_SESSION["staff_id"];
 
         $stmt = $pdo->prepare("SELECT StaffID, Name FROM staff WHERE StaffID = ?");
@@ -33,6 +32,8 @@ try {
     }
     
     echo "Welcome, " . htmlspecialchars($staff_name);
+    */ // ONLY THIS PART WASN'T WORKING......................................
+    /*
 } catch (PDOException $e) {
     die("Connection failed: " . $e->getMessage());
 }

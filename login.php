@@ -5,8 +5,8 @@ session_start();
 // Database connection details
 $host = "localhost";
 $dbname = "student_course_hub";
-$username = "root"; // Update with your database username
-$password = ""; // Update with your database password
+$username = "root"; 
+$password = ""; 
 
 // Connect to database
 try {
@@ -53,7 +53,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Get form data
     $username = trim($_POST["username"]);
     $password = trim($_POST["password"]);
-    $userType = isset($_POST["user_type"]) ? $_POST["user_type"] : "student"; // Default to student if not set
+    $userType = isset($_POST["user_type"]) ? $_POST["user_type"] : "staff";
     
     // Validate input
     if (empty($username) || empty($password)) {
@@ -74,11 +74,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     $table = "staff_users";
                     $redirectPage = "staff_dashboard.php";
                     $sessionPrefix = "staff";
-                    break;
-                case "student":
-                    $table = "student_users";
-                    $redirectPage = "student_dashboard.php";
-                    $sessionPrefix = "student";
                     break;
                 default:
                     $error = "Invalid user type";
