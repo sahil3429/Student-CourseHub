@@ -108,12 +108,6 @@ function getStaffWithModules($pdo, $departmentFilter = '', $roleFilter = '', $se
     
     $params = [];
     
-    // Apply search filter
-    if (!empty($searchTerm)) {
-        $query .= " AND s.Name LIKE :searchTerm";
-        $params[':searchTerm'] = "%$searchTerm%";
-    }
-    
     // Apply department filter
     if (!empty($departmentFilter)) {
         switch($departmentFilter) {
