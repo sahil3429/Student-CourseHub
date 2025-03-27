@@ -11,7 +11,7 @@ if (!isset($_SESSION["admin_logged_in"]) || $_SESSION["admin_logged_in"] !== tru
 // Check if required parameters are set
 if (!isset($_GET['type']) || !isset($_GET['id'])) {
     $_SESSION['error_message'] = "Missing required parameters.";
-    header("Location: admin_dashboard.php?section=modules-management.php");
+    header("Location: admin_dashboard.php?section=modules-management");
     exit();
 }
 
@@ -21,7 +21,7 @@ $id = intval($_GET['id']);
 // Validate ID is a number
 if ($id <= 0) {
     $_SESSION['error_message'] = "Invalid ID parameter.";
-    header("Location: admin_dashboard.php?section=modules-management.php");
+    header("Location: admin_dashboard.php?section=modules-management");
     exit();
 }
 
@@ -36,7 +36,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 } catch(PDOException $e) {
     $_SESSION['error_message'] = "Connection failed: " . $e->getMessage();
-    header("Location: admin_dashboard.php?section=modules-management.php");
+    header("Location: admin_dashboard.php?section=modules-management");
     exit();
 }
 
@@ -117,6 +117,6 @@ try {
 }
 
 // Redirect back to the dashboard
-header("Location: admin_dashboard.php?section=modules-management.php");
+header("Location: admin_dashboard.php?");
 exit();
 ?>

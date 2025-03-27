@@ -51,7 +51,7 @@ if (isset($_GET['id']) && !empty($_GET['id'])) {
         } else {
             // Module not found
             $_SESSION['error_message'] = "Module not found.";
-            header("Location: index.php");
+            header("Location: admin_dashboard.php");
             exit();
         }
     } catch(PDOException $e) {
@@ -149,7 +149,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             
             // Redirect to dashboard with success message
             $_SESSION['success_message'] = $is_edit_mode ? "Module updated successfully." : "Module added successfully.";
-            header("Location: index.php");
+            header("Location: admin_dashboard.php");
             exit();
         } catch(PDOException $e) {
             $errors[] = "Database error: " . $e->getMessage();
@@ -252,7 +252,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         <div class="admin-header">
             <h1><?php echo $page_title; ?></h1>
             <div class="admin-user">
-                <a href="index.php" class="back-btn">Return to Dashboard</a>
+                <a href="admin_dashboard.php" class="back-btn">Return to Dashboard</a>
             </div>
         </div>
         
@@ -320,7 +320,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 
                 <div class="buttons-container">
                     <a href="admin_dashboard.php?section=modules-management" class="back-btn">Cancel</a>
-                    <button type="submit" class="submit-btn"><a href="admin_dashboard.php?section=modules-management"></a><?php echo $is_edit_mode ? 'Update Module' : 'Add Module'; ?></button>
+                    <button type="submit" class="submit-btn"><a href="admin_dashboard.php?section=modules-management"><?php echo $is_edit_mode ? 'Update Module' : 'Add Module'; ?></a></button>
                 </div>
             </form>
         </div>
